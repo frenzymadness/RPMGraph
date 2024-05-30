@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en" data-bs-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RPMGraph</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+    <style>
+        #graph {
+            display: none;
+        }
+        #svgContainer {
+            overflow-x: auto;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="my-5">
+            <h1>Fedora rawhide RPM Graph</h1>
+        </div>
+        <div class="p-5 my-4 bg-light rounded-3">
+            <form class="row row-cols-lg-auto g-3 align-items-center justify-content-center" id="svgForm" method="POST">
+                <div class="col-12">
+                    <label class="visually-hidden" for="package">RPM package</label>
+                    <div class="input-group">
+                        <div class="input-group-text">RPM or SRPM:</div>
+                        <input type="text" class="form-control" id="package_name" placeholder="package_name" required>
+                    </div>
+                </div>
+                <div class="col-12">
+                    <label class="visually-hidden" for="depth">Depth</label>
+                    <div class="input-group">
+                        <div class="input-group-text">Depth:</div>
+                        <input type="number" class="form-control" id="depth" placeholder="depth" min="1" required>
+                    </div>
+                </div>
+                <div class="col-12">
+                    <label class="visually-hidden" for="layout">Layout</label>
+                    <div class="input-group">
+                        <div class="input-group-text">Layout:</div>
+                        <select class="form-control" name="layout" id="layout">
+                            <option value="dot" selected>dot</option>
+                            <option value="neato">neato</option>
+                            <option value="twopi">twopi</option>
+                            <option value="circo">circo</option>
+                            <option value="fdp">fdp</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="col-auto">
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" id="undirected">
+                        <label class="form-check-label text-dark" for="undirected">Include incoming edges</label>
+                    </div>
+                </div>
+                <div class="col-12">
+                    <button type="submit" class="btn btn-primary">Show</button>
+                </div>
+            </form>
+            <h3 class="text-dark" style="padding-top: 20px;">Legend</h3>
+            <div class="d-flex gap-2">
+                <!--<h6 class="badge text-bg-primary">Blue line</h6>-->
+                <img src="{{ url_for('static', filename='blue.png') }}" alt="blue lines" width="100" height="25">
+                <p class="text-dark">SRPM provides (builds to) RPM</p>
+            </div>
+            <div class="d-flex gap-2">
+                <!--<h6 class="badge text-bg-success">Green line</h6>-->
+                <img src="{{ url_for('static', filename='green.png') }}" alt="green lines" width="100" height="25">
+                
+                <p class="text-dark">Build requires</p>
+            </div>
+            <div class="d-flex gap-2">
+                <!--<h6 class="badge text-bg-danger">Red line</h6>-->
+                <img src="{{ url_for('static', filename='red.png') }}" alt="red lines" width="100" height="25">
+                <p class="text-dark">Requires</p>
+            </div>
+        </div>
+        <div class="p-5 my-4 bg-light rounded-3" id="graph">
+            <h3 class="text-dark" id="graphHeading">Gr</h3>
+            <div id="svgContainer"></div>
+        </div>
+        <!-- <div class="p-5 my-4 bg-light rounded-3">
+            <h1 class="text-dark">Dokumentace</h1>
+        </div> -->
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+    <script>
+        document.getElementById('svgForm').addEventListener('submit', function(event) {
+            event.preventDefault();
+
+            document.getElementById('graphHeading').innerHTML = "Loading…";
+            document.getElementById('graph').style.display = 'block';
+
+            const packageName = document.getElementById('package_name').value;
+            const depth = document.getElementById('depth').value;
+            const undirected = document.getElementById('undirected').checked;
+            const layout = document.getElementById('layout').value;
+
+            fetch('/generate_svg', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    package_name: packageName,
+                    depth: parseInt(depth),
+                    undirected: undirected,
+                    layout: layout,
+                }),
+            })
+            .then(response => response.text())
+            .then(data => {
+                document.getElementById('svgContainer').innerHTML = data;
+                document.getElementById('graphHeading').innerHTML = "Graph";
+            })
+            .catch((error) => {
+                console.error('Error:', error);
+                document.getElementById('graphHeading').innerHTML = "Error";
+            });
+        });
+    </script>
+</body>
+</html>
