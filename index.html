@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vizualizace grafu pomocí Sigma.js</title>
+    <style>
+        #sigma-container {
+            width: 100%;
+            height: 600px;
+            border: 1px solid #ccc;
+        }
+    </style>
+    <script src="https://cdn.jsdelivr.net/npm/sigma@1.2.1/build/sigma.min.js"></script>
+</head>
+<body>
+<h1>Vizualizace grafu pomocí Sigma.js</h1>
+<div id="sigma-container"></div>
+
+<script>
+    // JSON
+    var graph = {
+        nodes: [
+            { id: "python-colorama", label: "python-colorama", x: 0, y: 0, size: 3, color: '#008cc2' },
+            { id: "python3-colorama", label: "python3-colorama", x: 1, y: 1, size: 3, color: '#008cc2' },
+            { id: "python3-tomli", label: "python3-tomli", x: 2, y: 2, size: 3, color: '#008cc2' },
+            { id: "python3-hatchling", label: "python3-hatchling", x: 3, y: 3, size: 3, color: '#008cc2' },
+            { id: "python3-pytest", label: "python3-pytest", x: 4, y: 4, size: 3, color: '#008cc2' },
+            { id: "python3-pip", label: "python3-pip", x: 5, y: 5, size: 3, color: '#008cc2' },
+            { id: "pyproject-rpm-macros", label: "pyproject-rpm-macros", x: 6, y: 6, size: 3, color: '#008cc2' },
+            { id: "python3-devel", label: "python3-devel", x: 7, y: 7, size: 3, color: '#008cc2' },
+            { id: "python3-packaging", label: "python3-packaging", x: 8, y: 8, size: 3, color: '#008cc2' },
+            { id: "python3", label: "python3", x: 9, y: 9, size: 3, color: '#008cc2' },
+            { id: "python3-pathspec", label: "python3-pathspec", x: 10, y: 10, size: 3, color: '#008cc2' },
+            { id: "python3-trove-classifiers", label: "python3-trove-classifiers", x: 11, y: 11, size: 3, color: '#008cc2' },
+            { id: "python3-editables", label: "python3-editables", x: 12, y: 12, size: 3, color: '#008cc2' },
+            { id: "python3-pluggy", label: "python3-pluggy", x: 13, y: 13, size: 3, color: '#008cc2' },
+            { id: "python3-iniconfig", label: "python3-iniconfig", x: 14, y: 14, size: 3, color: '#008cc2' },
+            { id: "python3-rpm-macros", label: "python3-rpm-macros", x: 15, y: 15, size: 3, color: '#008cc2' }
+        ],
+        edges: [
+            { id: "e0", source: "python-colorama", target: "python3-colorama", color: '#282c34', type: 'line', size: 1 },
+            { id: "e1", source: "python3-tomli", target: "python-colorama", color: '#282c34', type: 'line', size: 1 },
+            { id: "e2", source: "python3-tomli", target: "python3-pathspec", color: '#282c34', type: 'line', size: 1 },
+            { id: "e3", source: "python3-tomli", target: "python3-pluggy", color: '#282c34', type: 'line', size: 1 },
+            { id: "e4", source: "python3-tomli", target: "python3-iniconfig", color: '#282c34', type: 'line', size: 1 },
+            { id: "e5", source: "python3-tomli", target: "python3-trove-classifiers", color: '#282c34', type: 'line', size: 1 },
+            { id: "e6", source: "python3-tomli", target: "python3-packaging", color: '#282c34', type: 'line', size: 1 },
+            { id: "e7", source: "python3-tomli", target: "python3-editables", color: '#282c34', type: 'line', size: 1 },
+            { id: "e8", source: "python3-tomli", target: "pyproject-rpm-macros", color: '#282c34', type: 'line', size: 1 },
+            { id: "e9", source: "python3-hatchling", target: "python-colorama", color: '#282c34', type: 'line', size: 1 }
+        ]
+    };
+
+    // Inicializace Sigmy
+    var s = new sigma({
+        renderer: {
+            container: document.getElementById('sigma-container'),
+            type: 'canvas'
+        },
+        settings: {
+            minEdgeSize: 0.1,
+            maxEdgeSize: 2,
+            minNodeSize: 1,
+            maxNodeSize: 8,
+        }
+    });
+
+    // Nacteni grafu v sigme
+    s.graph.read(graph);
+    // Pozadavek sigmy na nakresleni grafu
+    s.refresh();
+</script>
+</body>
+</html>
