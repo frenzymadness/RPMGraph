@@ -1,3 +1,4 @@
+import gzip
 import json
 import pickle
 import re
@@ -246,11 +247,11 @@ class DNF:
         print(self.stats)
         return self.G
 
-    def save_graph(self, filename="graph.pkl"):
-        with open(filename, "wb") as f:
+    def save_graph(self, filename="graph.pkl.gz"):
+        with gzip.open(filename, "wb") as f:
             pickle.dump(self.G, f)
 
-    def load_graph(self, filename="graph.pkl"):
-        with open(filename, "rb") as f:
+    def load_graph(self, filename="graph.pkl.gz"):
+        with gzip.open(filename, "rb") as f:
             self.G = pickle.load(f)
         return self.G

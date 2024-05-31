@@ -1,3 +1,4 @@
+import gzip
 import os
 import pickle
 import subprocess
@@ -15,7 +16,7 @@ def draw_graph(g, layout):
 
 
 def load_graph():
-    with open("graph.pkl", "rb") as f:
+    with gzip.open("graph.pkl.gz", "rb") as f:
         return pickle.load(f)
 
 
