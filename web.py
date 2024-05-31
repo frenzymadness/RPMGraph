@@ -63,5 +63,12 @@ def generate_graph():
     return graph_json
 
 
+@app.route("/reload")
+def reload():
+    global G
+    G = load_graph()
+    return "Reloaded!"
+
+
 if __name__ == "__main__":
     app.run(debug=True)
