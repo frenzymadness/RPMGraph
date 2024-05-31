@@ -1,11 +1,10 @@
 import gzip
 import json
-import os
 import pickle
 import subprocess
 
 import networkx as nx
-from flask import Flask, jsonify, render_template, request
+from flask import Flask, render_template, request
 
 app = Flask(__name__)
 
