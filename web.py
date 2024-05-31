@@ -2,6 +2,7 @@ import gzip
 import json
 import pickle
 import subprocess
+from pathlib import Path
 
 import networkx as nx
 from flask import Flask, render_template, request
@@ -35,7 +36,7 @@ def draw_graph(g, layout):
 
 
 def load_graph():
-    with gzip.open("graph.pkl.gz", "rb") as f:
+    with gzip.open(Path(__file__).parent / "graph.pkl.gz", "rb") as f:
         return pickle.load(f)
 
 
