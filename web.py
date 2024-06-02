@@ -2,6 +2,7 @@ import gzip
 import json
 import pickle
 import subprocess
+from datetime import datetime
 from pathlib import Path
 
 import networkx as nx
@@ -45,7 +46,10 @@ G = load_graph()
 
 @app.route("/")
 def index():
-    return render_template("index.html")
+    return render_template(
+        "index.html",
+        last_update=datetime.fromtimestamp(G.last_update).strftime("%Y-%m-%d %H:%M:%S"),
+    )
 
 
 @app.route("/generate_graph", methods=["POST"])

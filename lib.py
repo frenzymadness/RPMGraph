@@ -3,6 +3,7 @@ import json
 import pickle
 import re
 import time
+from datetime import datetime
 from functools import lru_cache
 
 import dnf
@@ -228,6 +229,7 @@ class DNF:
         print(f"Cache size: {len(self.resolve_cache)}")
         print("Stats")
         print(self.stats)
+        self.G.last_update = datetime.timestamp(datetime.now())
         return self.G
 
     def save_graph(self, filename="graph.pkl.gz"):
