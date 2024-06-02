@@ -31,23 +31,6 @@ def contains_SRPM(set):
     return False
 
 
-def graph_to_sigma_JSON(g):
-    d = nx.node_link_data(g, name="key")
-    d["edges"] = d["links"]
-    del d["links"]
-    del d["directed"]
-    del d["multigraph"]
-    del d["graph"]
-    d["attributes"] = {
-        "name": "RPMGraph",
-        "type": "directed",
-        "multi": True,
-        "allowSelfLoops": True,
-    }
-
-    return json.dumps(d)
-
-
 class DNF:
     def __init__(self):
         self.base = dnf.Base()
