@@ -20,7 +20,7 @@
 <body>
     <div class="container">
         <div class="my-5">
-            <h1>Fedora rawhide RPM Graph</h1>
+            <h1>Fedora rawhide RPM Graph <small>(alpha version)</small></h1>
         </div>
         <div class="p-5 my-4 bg-light rounded-3">
             <form class="row row-cols-lg-auto g-3 align-items-center justify-content-center" id="svgForm" method="POST">
@@ -59,21 +59,24 @@
                     <button type="submit" class="btn btn-primary">Show</button>
                 </div>
             </form>
+            </div>
             <div class="p-5 my-4 bg-light rounded-3" id="graph">
-                <h3 class="text-dark" id="graphHeading">Gr</h3>
+                <h3 class="text-dark" id="graphHeading">Graph</h3>
                 <div id="graphContainer"></div>
                 <h3 class="text-dark" style="padding-top: 20px;">Legend</h3>
-                <div class="d-flex gap-2">
-                    <img src="{{ url_for('static', filename='blue.png') }}" alt="blue lines" width="100" height="25">
-                    <p class="text-dark">SRPM provides (builds to) RPM</p>
-                </div>
-                <div class="d-flex gap-2">
-                    <img src="{{ url_for('static', filename='green.png') }}" alt="green lines" width="100" height="25">
-                    <p class="text-dark">Build requires</p>
-                </div>
-                <div class="d-flex gap-2">
-                    <img src="{{ url_for('static', filename='red.png') }}" alt="red lines" width="100" height="25">
-                    <p class="text-dark">Requires</p>
+                <div class="d-flex justify-content-between">
+                    <div class="d-flex gap-2">
+                        <img src="{{ url_for('static', filename='blue.png') }}" alt="blue lines" width="100" height="25">
+                        <p class="text-dark">SRPM provides (builds to) RPM</p>
+                    </div>
+                    <div class="d-flex gap-2">
+                        <img src="{{ url_for('static', filename='green.png') }}" alt="green lines" width="100" height="25">
+                        <p class="text-dark">Build requires</p>
+                    </div>
+                    <div class="d-flex gap-2">
+                        <img src="{{ url_for('static', filename='red.png') }}" alt="red lines" width="100" height="25">
+                        <p class="text-dark">Requires</p>
+                    </div>
                 </div>
             </div>
             <div class="p-5 my-4 bg-light rounded-3">
@@ -102,6 +105,7 @@
             nodeDimensionsIncludeLabels: true
         }
     }
+
     document.getElementById('svgForm').addEventListener('submit', function(event) {
         event.preventDefault();
         
@@ -127,10 +131,12 @@
         })
         .then(response => response.json())
         .then(data => {
-            document.getElementById('graphHeading').innerHTML = "Graph";
-            
             layout_name = document.getElementById("layout").value;
-            
+            nodes = data.nodes.length;
+            edges = data.edges.length;
+
+            document.getElementById('graphHeading').innerHTML = `Rendering… (${nodes} nodes and ${edges} edges)`;
+
             var cy = cytoscape({
                 container: document.getElementById('graphContainer'),
                 elements: data,
@@ -159,7 +165,11 @@
                 ],
                 layout: layouts[layout_name]
             });
-            
+
+            cy.on('layoutstop', function() {
+                document.getElementById('graphHeading').innerHTML = `Graph (${nodes} nodes and ${edges} edges)`;
+            });
+
         })
         .catch((error) => {
             console.error('Error:', error);
