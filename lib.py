@@ -170,7 +170,8 @@ class DNF:
     def requires(self, pkg):
         res = set()
         for p in pkg.requires:
-            provider = self.resolve_RPM(p.name, for_pkg=pkg)
+            full_requirement = " ".join((p.name, p.relation, p.version))
+            provider = self.resolve_RPM(full_requirement, for_pkg=pkg)
             if provider is None:
                 continue
             if pkg.sourcerpm is None and provider.sourcerpm is None:
