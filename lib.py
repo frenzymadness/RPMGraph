@@ -36,6 +36,7 @@ class DNF:
     def __init__(self):
         self.base = dnf.Base()
         self.base.conf.read()
+        self.base.conf.set_or_append_opt_value("install_weak_deps", "0")
         self.base.read_all_repos()
         self.base.repos.get_matching("*").disable()
         self.base.repos.get_matching("rawhide").enable()
